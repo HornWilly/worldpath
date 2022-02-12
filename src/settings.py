@@ -3,6 +3,7 @@ WIDTH = 1280
 HEIGTH = 720
 FPS = 60
 TILESIZE = 64
+PLAYER_SPEED = 5
 
 # x = rock
 # space = nothing
