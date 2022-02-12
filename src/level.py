@@ -3,7 +3,7 @@ from settings import *
 from tile import Tile
 from player import Player
 from debug import debug
-
+from camera import Camera
 
 class Level:
     def __init__(self):
@@ -13,7 +13,7 @@ class Level:
         self.display_surface = pygame.display.get_surface()
 
         # sprite group setup
-        self.visible_sprites = pygame.sprite.Group()
+        self.visible_sprites = Camera()
         self.obstacle_sprites = pygame.sprite.Group()
 
         # sprite setup
@@ -31,6 +31,6 @@ class Level:
 
     def run(self):
         # update and draw the game
-        self.visible_sprites.draw(self.display_surface)
+        self.visible_sprites.custom_draw(self.player)
         self.visible_sprites.update()
         debug(self.player.direction)
