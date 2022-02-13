@@ -5,6 +5,7 @@ from player import Player
 from debug import debug
 from camera import Camera
 
+
 class Level:
     def __init__(self):
         self.player = None
