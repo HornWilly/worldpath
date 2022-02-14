@@ -24,7 +24,7 @@ class Level:
         layouts = {
             'boundary': get_layout_from_csv('../map/map_floor_blocks.csv'),
             'grass': get_layout_from_csv('../map/map_grass.csv'),
-            'objects': get_layout_from_csv('../map/map_objects.csv'),
+            'objects': get_layout_from_csv('../map/map_large_objects.csv'),
         }
         graphics = {
             'grass': get_files_list_from_folder('../graphics/grass'),
@@ -45,7 +45,7 @@ class Level:
                             object_image = graphics['objects'][int(col)]
                             Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', object_image)
 
-        self.player = Player((2000, 1430), [self.visible_sprites], self.obstacle_sprites)
+        self.player = Player((2000, 1420), [self.visible_sprites], self.obstacle_sprites)
 
     def run(self):
         # update and draw the game
