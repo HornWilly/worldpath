@@ -24,7 +24,7 @@ class Level:
         layouts = {
             'boundary': get_layout_from_csv('../map/map_floor_blocks.csv'),
             'grass': get_layout_from_csv('../map/map_grass.csv'),
-            'objects': get_layout_from_csv('../map/map_large_objects.csv'),
+            'objects': get_layout_from_csv('../map/map_objects.csv'),
         }
         graphics = {
             'grass': get_files_list_from_folder('../graphics/grass'),
