@@ -3,7 +3,7 @@ from os import walk
 import pygame
 
 
-def get_layout_from_csv(path) -> []:
+def get_layout_from_csv(path) -> list:
     terrain_map = []
     with open(path) as level_map:
         layout = reader(level_map, delimiter=',')
@@ -12,7 +12,7 @@ def get_layout_from_csv(path) -> []:
         return terrain_map
 
 
-def get_files_list_from_folder(path) -> []:
+def get_files_list_from_folder(path) -> list:
     surface_list = []
 
     for _, __, img_files in walk(path):
