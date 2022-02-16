@@ -1,12 +1,12 @@
 from random import choice
 
-import pygame
+from camera import Camera
+from debug import debug
+from player import Player
 from settings import *
 from tile import Tile
-from player import Player
-from debug import debug
-from camera import Camera
 from utils import *
+from weapon import Weapon
 
 
 class Level:
@@ -45,7 +45,10 @@ class Level:
                             object_image = graphics['objects'][int(col)]
                             Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', object_image)
 
-        self.player = Player((2000, 1420), [self.visible_sprites], self.obstacle_sprites)
+        self.player = Player((2000, 1420), [self.visible_sprites], self.obstacle_sprites, self.create_attack)
+
+    def create_attack(self):
+        Weapon(self.player, [self.visible_sprites])
 
     def run(self):
         # update and draw the game
