@@ -13,6 +13,7 @@ class Weapon(pygame.sprite.Sprite):
         self.image = pygame.Surface((40, 40))
 
         if direction == 3:
-            self.rect = self.image.get_rect(midleft=player.rect.midright)
+            # pygame.math.Vector2(x, y) -> We want weapon to be a little more down than the player's center
+            self.rect = self.image.get_rect(midleft=player.rect.midright + pygame.math.Vector2(0, 16))
         else:
             self.rect = self.image.get_rect(center=player.rect.center)
