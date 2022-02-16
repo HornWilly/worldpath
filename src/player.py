@@ -25,8 +25,23 @@ class Player(pygame.sprite.Sprite):
             'up_attack': [],
             'down_attack': []
         }
+        self.status_to_animation = [
+            'up',
+            'down',
+            'left',
+            'right',
+            'up_idle',
+            'down_idle',
+            'left_idle',
+            'right_idle',
+            'up_attack',
+            'down_attack',
+            'left_attack',
+            'right_attack',
+        ]
         self.import_player_assets()
-        self.status = 'down'
+        self.status_movement = 1
+        self.status_action = 0
         self.frame_index = 0
         self.animation_speed = PLAYER_ANIMATION_SPEED
 
@@ -52,19 +67,19 @@ class Player(pygame.sprite.Sprite):
         # movement input
         if keys[pygame.K_UP]:
             self.direction.y = -1
-            self.status = 'up'
+            self.status_movement = 0
         elif keys[pygame.K_DOWN]:
             self.direction.y = 1
-            self.status = 'down'
+            self.status_movement = 1
         else:
             self.direction.y = 0
 
         if keys[pygame.K_RIGHT]:
             self.direction.x = 1
-            self.status = 'right'
+            self.status_movement = 3
         elif keys[pygame.K_LEFT]:
             self.direction.x = -1
-            self.status = 'left'
+            self.status_movement = 2
         else:
             self.direction.x = 0
 
@@ -72,34 +87,26 @@ class Player(pygame.sprite.Sprite):
         if keys[pygame.K_SPACE]:
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
+            self.status_action = 1
             debug('attack', 30)
 
         # magic input
         if keys[pygame.K_LCTRL]:
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
+            self.status_action = 1
             debug('magic', 30)
 
     def get_status(self):
         # idle status
-        if self.direction.x == 0 and self.direction.y == 0:
-            if 'idle' not in self.status and 'attack' not in self.status:
-                self.status = self.status + '_idle'
+        if self.direction.x == 0 and self.direction.y == 0 and self.status_action == 0:
+            return self.status_to_animation[self.status_movement + 4]
 
         # attack status
-        if self.attacking:
-            self.direction.x = 0
-            self.direction.y = 0
-            if 'attack' not in self.status:
-                if 'idle' in self.status:
-                    self.status = self.status.replace('_idle', '_attack')
-                else:
-                    self.status = self.status + '_attack'
+        if self.status_action == 1:
+            return self.status_to_animation[self.status_movement + 8]
         else:
-            # if not player not attacking and attack on status
-            # then we delete attack on status
-            if 'attack' in self.status:
-                self.status = self.status.replace('_attack', '')
+            return self.status_to_animation[self.status_movement]
 
     def move(self, speed):
         if self.direction.magnitude() != 0:
@@ -135,9 +142,14 @@ class Player(pygame.sprite.Sprite):
         if self.attacking:
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attacking = False
+                self.status_action = 0
+            else:
+                # On attack, stop all player's movement
+                self.direction.x = 0
+                self.direction.y = 0
 
     def animate(self):
-        animation = self.animations[self.status]
+        animation = self.animations[self.get_status()]
 
         # loop over the frame index
         self.frame_index += self.animation_speed
@@ -152,6 +164,5 @@ class Player(pygame.sprite.Sprite):
         # Order is important
         self.input()
         self.cooldown()
-        self.get_status()
         self.animate()
         self.move(self.speed)
