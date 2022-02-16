@@ -20,6 +20,9 @@ class Level:
         # sprite setup
         self.create_map()
 
+        # weapon sprite
+        self.weapon_sprite = None
+
     def create_map(self):
         layouts = {
             'boundary': get_layout_from_csv('../map/map_floor_blocks.csv'),
@@ -45,10 +48,16 @@ class Level:
                             object_image = graphics['objects'][int(col)]
                             Tile((x, y), [self.visible_sprites, self.obstacle_sprites], 'object', object_image)
 
-        self.player = Player((2000, 1420), [self.visible_sprites], self.obstacle_sprites, self.create_attack)
+        self.player = Player((2000, 1420), [self.visible_sprites], self.obstacle_sprites, self.create_weapon,
+                             self.destroy_weapon)
 
-    def create_attack(self):
-        Weapon(self.player, [self.visible_sprites])
+    def create_weapon(self):
+        self.weapon_sprite = Weapon(self.player, [self.visible_sprites])
+
+    def destroy_weapon(self):
+        if self.weapon_sprite:
+            self.weapon_sprite.kill()
+        self.weapon_sprite = None
 
     def run(self):
         # update and draw the game
