@@ -1,3 +1,5 @@
+import pygame
+
 from settings import *
 from utils import *
 from debug import debug
@@ -58,7 +60,10 @@ class Player(pygame.sprite.Sprite):
         self.create_weapon = create_weapon
         self.destroy_weapon = destroy_weapon
         self.weapon_index = 0
-        self.weapon = list(weapon_data.keys())[self.weapon_index]
+        self.nb_weapon = len(list(weapon_data.keys()))
+        self.can_switch_weapon = True
+        self.weapon_switch_time = None
+        self.weapon_switch_duration_cooldown = WEAPON_SWITCH_COOLDOWN_MS
 
     def import_player_assets(self):
         character_path = '../graphics/player/'
@@ -104,6 +109,13 @@ class Player(pygame.sprite.Sprite):
                 self.attack_time = pygame.time.get_ticks()
                 self.status_action = 1
 
+            if keys[pygame.K_BACKSPACE] and self.can_switch_weapon:
+                self.can_switch_weapon = False
+                self.weapon_switch_time = pygame.time.get_ticks()
+
+                self.weapon_index += 1
+                self.weapon_index = self.weapon_index % self.nb_weapon
+
     def get_status(self):
         # idle status
         if self.direction.x == 0 and self.direction.y == 0 and self.status_action == 0:
@@ -114,6 +126,9 @@ class Player(pygame.sprite.Sprite):
             return self.status_to_animation[self.status_movement + 8]
         else:
             return self.status_to_animation[self.status_movement]
+
+    def get_weapon(self):
+        return list(weapon_data.keys())[self.weapon_index]
 
     def move(self, speed):
         if self.direction.magnitude() != 0:
@@ -155,6 +170,10 @@ class Player(pygame.sprite.Sprite):
                 # On attack, stop all player's movement
                 self.direction.x = 0
                 self.direction.y = 0
+
+        if not self.can_switch_weapon:
+            if current_time - self.weapon_switch_time >= self.weapon_switch_duration_cooldown:
+                self.can_switch_weapon = True
 
     def animate(self):
         animation = self.animations[self.get_status()]
