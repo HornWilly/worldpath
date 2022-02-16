@@ -10,7 +10,8 @@ class Weapon(pygame.sprite.Sprite):
         # 3 => right
         direction = player.status_movement
 
-        self.image = pygame.Surface((40, 40))
+        image_path = f'../graphics/weapons/{player.weapon}/{player.status_to_animation[direction]}.png'
+        self.image = pygame.image.load(image_path).convert_alpha()
 
         # pygame.math.Vector2(x, y) -> We want weapon to be exactly where player's arm is
         if direction == 0:

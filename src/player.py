@@ -6,7 +6,6 @@ from debug import debug
 class Player(pygame.sprite.Sprite):
     def __init__(self, pos, groups, obstacle_sprites, create_attack):
         super().__init__(groups)
-        self.create_attack = create_attack
         self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
         self.hitbox = self.rect.inflate(0, -26)
@@ -55,6 +54,11 @@ class Player(pygame.sprite.Sprite):
 
         self.obstacle_sprites = obstacle_sprites
 
+        # weapons setup
+        self.create_attack = create_attack
+        self.weapon_index = 0
+        self.weapon = list(weapon_data.keys())[self.weapon_index]
+
     def import_player_assets(self):
         character_path = '../graphics/player/'
 
@@ -90,14 +94,12 @@ class Player(pygame.sprite.Sprite):
             self.attack_time = pygame.time.get_ticks()
             self.status_action = 1
             self.create_attack()
-            debug('attack', 30)
 
         # magic input
         if keys[pygame.K_LCTRL]:
             self.attacking = True
             self.attack_time = pygame.time.get_ticks()
             self.status_action = 1
-            debug('magic', 30)
 
     def get_status(self):
         # idle status
