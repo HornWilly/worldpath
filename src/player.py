@@ -4,7 +4,7 @@ from debug import debug
 
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, pos, groups, obstacle_sprites, create_attack):
+    def __init__(self, pos, groups, obstacle_sprites, create_weapon, destroy_weapon):
         super().__init__(groups)
         self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
         self.rect = self.image.get_rect(topleft=pos)
@@ -55,7 +55,8 @@ class Player(pygame.sprite.Sprite):
         self.obstacle_sprites = obstacle_sprites
 
         # weapons setup
-        self.create_attack = create_attack
+        self.create_weapon = create_weapon
+        self.destroy_weapon = destroy_weapon
         self.weapon_index = 0
         self.weapon = list(weapon_data.keys())[self.weapon_index]
 
@@ -67,39 +68,41 @@ class Player(pygame.sprite.Sprite):
             self.animations[animation] = get_files_list_from_folder(full_path)
 
     def input(self):
-        keys = pygame.key.get_pressed()
+        # Get user control when player is not attacking
+        if not self.attacking:
+            keys = pygame.key.get_pressed()
 
-        # movement input
-        if keys[pygame.K_UP]:
-            self.direction.y = -1
-            self.status_movement = 0
-        elif keys[pygame.K_DOWN]:
-            self.direction.y = 1
-            self.status_movement = 1
-        else:
-            self.direction.y = 0
+            # movement input
+            if keys[pygame.K_UP]:
+                self.direction.y = -1
+                self.status_movement = 0
+            elif keys[pygame.K_DOWN]:
+                self.direction.y = 1
+                self.status_movement = 1
+            else:
+                self.direction.y = 0
 
-        if keys[pygame.K_RIGHT]:
-            self.direction.x = 1
-            self.status_movement = 3
-        elif keys[pygame.K_LEFT]:
-            self.direction.x = -1
-            self.status_movement = 2
-        else:
-            self.direction.x = 0
+            if keys[pygame.K_RIGHT]:
+                self.direction.x = 1
+                self.status_movement = 3
+            elif keys[pygame.K_LEFT]:
+                self.direction.x = -1
+                self.status_movement = 2
+            else:
+                self.direction.x = 0
 
-        # attack input
-        if keys[pygame.K_SPACE]:
-            self.attacking = True
-            self.attack_time = pygame.time.get_ticks()
-            self.status_action = 1
-            self.create_attack()
+            # attack input
+            if keys[pygame.K_SPACE]:
+                self.attacking = True
+                self.attack_time = pygame.time.get_ticks()
+                self.status_action = 1
+                self.create_weapon()
 
-        # magic input
-        if keys[pygame.K_LCTRL]:
-            self.attacking = True
-            self.attack_time = pygame.time.get_ticks()
-            self.status_action = 1
+            # magic input
+            if keys[pygame.K_LCTRL]:
+                self.attacking = True
+                self.attack_time = pygame.time.get_ticks()
+                self.status_action = 1
 
     def get_status(self):
         # idle status
@@ -147,6 +150,7 @@ class Player(pygame.sprite.Sprite):
             if current_time - self.attack_time >= self.attack_cooldown:
                 self.attacking = False
                 self.status_action = 0
+                self.destroy_weapon()
             else:
                 # On attack, stop all player's movement
                 self.direction.x = 0
