@@ -18,29 +18,16 @@ class Player(pygame.sprite.Sprite):
             'down': [],
             'left': [],
             'right': [],
-            'right_idle': [],
-            'left_idle': [],
             'up_idle': [],
             'down_idle': [],
-            'right_attack': [],
-            'left_attack': [],
+            'left_idle': [],
+            'right_idle': [],
             'up_attack': [],
-            'down_attack': []
+            'down_attack': [],
+            'left_attack': [],
+            'right_attack': [],
         }
-        self.status_to_animation = [
-            'up',
-            'down',
-            'left',
-            'right',
-            'up_idle',
-            'down_idle',
-            'left_idle',
-            'right_idle',
-            'up_attack',
-            'down_attack',
-            'left_attack',
-            'right_attack',
-        ]
+        self.status_to_animation = list(self.animations.keys())
         self.import_player_assets()
         self.status_movement = 1
         self.status_action = 0
